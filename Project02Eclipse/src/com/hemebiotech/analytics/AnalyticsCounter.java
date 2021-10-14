@@ -13,15 +13,14 @@ import java.util.stream.Stream;
 public class AnalyticsCounter {
 
 	public static void main(String args[]) throws Exception {
-		String inFile = "symptoms.txt";
+		String inFile = "sympoms.txt";
 		String oFile = "./result.out";
 		FileWriter writer = new FileWriter (oFile);
 
 		BufferedReader reader = null;
 		Map<String, Integer> symptomsMap = null;
 
-
-		try (Stream<Path> walk = Files.walk(Paths.get("."), 2)) {
+		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
 			Optional<Path> optPath = walk
 					.filter(p -> p.getFileName().toString().contains(inFile))
 					.findFirst();
@@ -33,18 +32,7 @@ public class AnalyticsCounter {
 
 			reader = new BufferedReader(new FileReader(optPath.get().toFile()));
 			symptomsMap = new SymptomReaderImpl(reader).GetSymptoms();
-
-			StringBuilder oTextBuilder = new StringBuilder()
-					.append("Symptoms counts: ").append(symptomsMap.size())
-					.append("\r\n");
-
-			symptomsMap.forEach((key, value) ->
-					oTextBuilder.append("Symptom: ").append(key)
-							.append(", Total count: ").append(value)
-							.append("\r\n")
-			);
-
-			writer.write(oTextBuilder.toString());
+			writer.write(new AnalyticsSerializer(symptomsMap).serialize());
 
 		} catch (Exception ex) {
 			writer.write(ex.toString());
@@ -53,7 +41,5 @@ public class AnalyticsCounter {
 			if (symptomsMap != null) symptomsMap.clear();
 			writer.close();
 		}
-
-
 	}
 }
