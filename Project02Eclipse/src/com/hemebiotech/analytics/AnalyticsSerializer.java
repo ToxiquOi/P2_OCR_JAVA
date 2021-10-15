@@ -1,8 +1,10 @@
 package com.hemebiotech.analytics;
 
-import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * A simple class to format reports into output files
+ */
 public class AnalyticsSerializer {
 
     private Map<String, Integer> mRportsMap;
@@ -11,6 +13,10 @@ public class AnalyticsSerializer {
         mRportsMap = reportsMap;
     }
 
+    /**
+     * Serialize map injected in constructor
+     * @return Formated Map content
+     */
     public String serialize() {
         StringBuilder oTextBuilder = new StringBuilder()
                 .append("Symptoms counts: ").append(mRportsMap.size())

@@ -10,36 +10,39 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+
 public class AnalyticsCounter {
 
 	public static void main(String args[]) throws Exception {
-		String inFile = "sympoms.txt";
+		String inFile = "symptoms.txt";
 		String oFile = "./result.out";
-		FileWriter writer = new FileWriter (oFile);
 
-		BufferedReader reader = null;
 		Map<String, Integer> symptomsMap = null;
 
-		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
-			Optional<Path> optPath = walk
-					.filter(p -> p.getFileName().toString().contains(inFile))
-					.findFirst();
+		try (FileWriter writer = new FileWriter (oFile)) {
+			try (Stream<Path> walk = Files.walk(Paths.get(System.getProperty("user.dir")))) {
+				Optional<Path> optPath = walk
+						.filter(p -> p.getFileName().toString().contains(inFile))
+						.findFirst();
 
-			if (optPath.isEmpty()) {
-				System.out.println("Input file not found");
-				return;
+				if (optPath.isEmpty()) {
+					String errMess = "Input file not found";
+					writer.write(errMess);
+					System.out.println(errMess);
+					return;
+				}
+
+
+				try (BufferedReader bReader = new BufferedReader(new FileReader(optPath.get().toFile()));) {
+					symptomsMap = new SymptomReaderImpl(bReader).GetSymptoms();
+					writer.write(new AnalyticsSerializer(symptomsMap).serialize());
+				}
+
+			} catch (Exception ex) {
+				writer.write(ex.toString());
 			}
-
-			reader = new BufferedReader(new FileReader(optPath.get().toFile()));
-			symptomsMap = new SymptomReaderImpl(reader).GetSymptoms();
-			writer.write(new AnalyticsSerializer(symptomsMap).serialize());
-
-		} catch (Exception ex) {
-			writer.write(ex.toString());
 		} finally {
-			if (reader != null) reader.close();
 			if (symptomsMap != null) symptomsMap.clear();
-			writer.close();
 		}
 	}
 }

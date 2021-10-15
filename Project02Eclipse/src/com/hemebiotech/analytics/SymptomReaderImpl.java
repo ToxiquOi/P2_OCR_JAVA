@@ -5,12 +5,11 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Simple brute force implementation
- *
+ * Class implementing interface ISymptomReader
  */
 public class SymptomReaderImpl implements ISymptomReader {
 
-	private BufferedReader mReader;
+	private final BufferedReader mReader;
 	
 	/**
 	 * 
