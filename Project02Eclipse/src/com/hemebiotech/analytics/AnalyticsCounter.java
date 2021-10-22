@@ -13,21 +13,20 @@ import java.util.stream.Stream;
 
 public class AnalyticsCounter {
 
-	public static void main(String[] args) throws Exception {
+
+	public static void main(String args[]) throws Exception {
 		String inFile = System.getProperty("user.dir") + System.getProperty("file.separator") + "Project02Eclipse/symptoms.txt";
 		String oFile = "./result.out";
 
-		Map<String, Integer> symptomsMap = null;
+		try (FileWriter writer = new FileWriter (oFile); BufferedReader bReader = new BufferedReader(new FileReader(inFile))) {
+			//Create symptoms map from input file
+			Map<String, Integer> symptomsMap = new SymptomReaderImpl(bReader).GetSymptoms();
+			//Serialize and write report
+			writer.write(new AnalyticsSerializer().serialize(symptomsMap));
 
-		try (FileWriter writer = new FileWriter (oFile)) {
-			try (BufferedReader bReader = new BufferedReader(new FileReader(inFile))) {
-				symptomsMap = new SymptomReaderImpl(bReader).GetSymptoms();
-				writer.write(new AnalyticsSerializer().serialize(symptomsMap));
-			} catch (Exception ex) {
-				writer.write(ex.toString());
-			}
-		} finally {
-			if (symptomsMap != null) symptomsMap.clear();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+			throw ex;
 		}
 	}
 }
