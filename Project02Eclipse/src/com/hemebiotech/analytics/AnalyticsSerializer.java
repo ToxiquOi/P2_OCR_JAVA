@@ -7,27 +7,21 @@ import java.util.Map;
  */
 public class AnalyticsSerializer {
 
-    private Map<String, Integer> mRportsMap;
-
-    public AnalyticsSerializer(Map<String, Integer> reportsMap) {
-        mRportsMap = reportsMap;
-    }
-
     /**
      * Serialize map injected in constructor
      * @return Formated Map content
      */
-    public String serialize() {
-        StringBuilder oTextBuilder = new StringBuilder()
-                .append("Symptoms counts: ").append(mRportsMap.size())
+    public String serialize(Map<String, Integer> reportsMap) {
+        StringBuilder textBuilder = new StringBuilder()
+                .append("Symptoms counts: ").append(reportsMap.size())
                 .append("\r\n");
 
-        mRportsMap.forEach((key, value) ->
-                oTextBuilder.append("Symptom: ").append(key)
+        reportsMap.forEach((key, value) ->
+                textBuilder.append("Symptom: ").append(key)
                         .append(", Total count: ").append(value)
                         .append("\r\n")
         );
 
-        return oTextBuilder.toString();
+        return textBuilder.toString();
     }
 }
