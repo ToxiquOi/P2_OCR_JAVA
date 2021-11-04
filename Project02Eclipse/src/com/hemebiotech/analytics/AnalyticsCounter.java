@@ -1,28 +1,41 @@
 package com.hemebiotech.analytics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.Map;
 
 
+/**
+ * The core process class
+ */
+public class AnalyticsCounter implements Runnable {
 
-public class AnalyticsCounter {
+	private final String mInputFile;
+	private final String mOutFile;
 
+	public AnalyticsCounter(String inputFile, String outputFile) {
+		mInputFile = inputFile;
+		mOutFile = outputFile;
+	}
 
-	public static void main(String args[]) throws Exception {
-		String inFile = System.getProperty("user.dir") + System.getProperty("file.separator") + "Project02Eclipse/symptoms.txt";
-		String oFile = "./result.out";
-
-		try (FileWriter writer = new FileWriter (oFile); BufferedReader bReader = new BufferedReader(new FileReader(inFile))) {
+	/**
+	 * Run the process, it will produce a report into the defined output file
+	 */
+	@Override
+	public void run() {
+		try (final FileWriter WRITER = new FileWriter(mOutFile); final BufferedReader READER = new BufferedReader(new FileReader(mInputFile))) {
 			//Create symptoms map from input file
-			Map<String, Integer> symptomsMap = new SymptomReaderImpl(bReader).GetSymptoms();
-			//Serialize and write report
-			writer.write(new AnalyticsSerializer().serialize(symptomsMap));
+			ISymptomReader symptomReader = new SymptomReaderImpl(READER);
+			Map<String, Integer> symptomsMap = symptomReader.GetSymptoms();
 
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-			throw ex;
+			//Serialize and write report
+			ISymptomSerializer serializer = new SymptomSerializerImp(symptomsMap);
+			WRITER.write(serializer.serialize());
+		} catch(FileNotFoundException ex1) {
+			ex1.printStackTrace();
+		} catch (IOException ex2) {
+			ex2.printStackTrace();
+		}  catch (Exception ex3) {
+			ex3.printStackTrace();
 		}
 	}
 }
