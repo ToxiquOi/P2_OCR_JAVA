@@ -25,10 +25,12 @@ public class SymptomSerializerImp implements ISymptomSerializer {
                 .append("\r\n");
 
         mReportsMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                .forEach(entry ->
-                textBuilder.append("Symptom: ").append(entry.getKey())
-                    .append(", Total count: ").append(entry.getValue())
-                    .append("\r\n")
+                .forEach(entry -> {
+                    System.out.println(entry.getKey().toUpperCase() + ", count : " + entry.getValue());
+                    textBuilder.append("Symptom: ").append(entry.getKey())
+                            .append(", Total count: ").append(entry.getValue())
+                            .append("\r\n");
+                }
         );
 
         return textBuilder.toString();
