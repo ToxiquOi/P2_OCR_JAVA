@@ -21,14 +21,13 @@ public class SymptomReaderImpl implements ISymptomReader {
 	
 	@Override
 	public Map<String, Integer> GetSymptoms() throws IOException {
-		Map<String, Integer> symptomsMap = new HashMap<>();
+		final Map<String, Integer> symptomsMap = new HashMap<>();
 
 		while(mReader.ready()) {
 			String line = mReader.readLine();
-			System.out.println("symptom from file: " + line);
 
 			if(symptomsMap.containsKey(line))
-				symptomsMap.replace(line, symptomsMap.get(line) + 1);
+				symptomsMap.put(line, symptomsMap.get(line) + 1);
 			else
 				symptomsMap.put(line, 1);
 		}

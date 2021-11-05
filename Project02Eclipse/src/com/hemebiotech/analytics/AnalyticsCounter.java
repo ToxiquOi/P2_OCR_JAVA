@@ -30,6 +30,7 @@ public class AnalyticsCounter implements Runnable {
 			//Serialize and write report
 			ISymptomSerializer serializer = new SymptomSerializerImp(symptomsMap);
 			WRITER.write(serializer.serialize());
+
 		} catch(FileNotFoundException ex1) {
 			ex1.printStackTrace();
 		} catch (IOException ex2) {
